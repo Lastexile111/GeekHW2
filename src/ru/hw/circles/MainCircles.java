@@ -9,6 +9,7 @@ public class MainCircles extends JFrame {
     private static final int WINDOW_WIDTH = 800;
     private static final int WINDOW_HEIGHT = 600;
 
+    Sprite backGround = null;
     Sprite[] sprites = new Sprite[10];
 
     public static void main(String[] args) {
@@ -31,6 +32,7 @@ public class MainCircles extends JFrame {
     }
 
     private void initApplication() {
+        backGround = new BackGround();
         for (int i = 0; i < sprites.length; i++) {
             sprites[i] = new Ball();
         }
@@ -42,12 +44,14 @@ public class MainCircles extends JFrame {
     }
 
     private void update(GameCanvas canvas, float deltaTime) {
+        backGround.update(canvas, deltaTime);
         for (int i = 0; i < sprites.length; i++) {
             sprites[i].update(canvas, deltaTime);
         }
     }
 
     private void render(GameCanvas canvas, Graphics g) {
+        backGround.render(canvas, g);
         for (int i = 0; i < sprites.length; i++) {
             sprites[i].render(canvas, g);
         }
