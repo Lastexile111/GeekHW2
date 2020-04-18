@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class ClientGUI extends JFrame implements ActionListener, Thread.UncaughtExceptionHandler {
 
@@ -23,10 +25,16 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
     private final JButton btnDisconnect = new JButton("<html><b>Disconnect</b></html>");
     private final JTextField tfMessage = new JTextField();
     private final JButton btnSend = new JButton("Send");
+    FileWriter fw;
+
+
+
 
     private final JList<String> userList = new JList<>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+
+
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -35,7 +43,8 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         });
     }
 
-    ClientGUI() {
+    ClientGUI(){
+
         Thread.setDefaultUncaughtExceptionHandler(this);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -47,11 +56,20 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         JScrollPane scrUser = new JScrollPane(userList);
         JScrollPane scrLog = new JScrollPane(log);
         scrUser.setPreferredSize(new Dimension(100, 0));
+
+        //Открываем поток
+        try(FileWriter fw = new FileWriter( "log.txt" )) {
+            fw.write("open");
+            this.fw = fw;
+        } catch (IOException exc) {
+            exc.printStackTrace();
+        }
+
         log.setLineWrap(true);
         log.setWrapStyleWord(true);
         log.setEditable(false);
         cbAlwaysOnTop.addActionListener(this);
-
+        btnLogin.addActionListener(this);
 
         panelTop.add(tfIPAddress);
         panelTop.add(tfPort);
@@ -74,6 +92,15 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
     @Override
     public void actionPerformed(ActionEvent e) {
         Object src = e.getSource();
+        if (src == btnLogin){
+
+            //Пишем в лог
+            try(FileWriter fw = this.fw) {
+               fw.write("button PUSH");
+            } catch (IOException exc) {
+                exc.printStackTrace();
+            }
+        }
         if (src == cbAlwaysOnTop) {
             setAlwaysOnTop(cbAlwaysOnTop.isSelected());
         } else {
